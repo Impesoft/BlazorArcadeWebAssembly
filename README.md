@@ -2,6 +2,10 @@
 
 **BlazorArcade** is a comprehensive, feature-rich web application built with Blazor WebAssembly (.NET 9) that brings classic retro, puzzle, and arcade games directly to your browser with offline PWA support and modern, responsive design.
 
+## Screenshots
+
+![BlazorArcade game library](docs/screenshots/screenshot_1.webp)
+
 ---
 
 ## 🎮 Featured Games & Tools
