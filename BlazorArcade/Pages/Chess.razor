@@ -33,13 +33,22 @@
         
         <div class="controls">
             <button class="arcade-btn" @onclick="@(() => _nav.NavigateTo("/"))">HOME</button>
-            <button class="arcade-btn" @onclick="NewGame">NEW GAME</button>
-            <label class="ai-toggle">
-                <input type="checkbox" @bind="PlayAgainstComputer" />
-                Play vs Computer
-            </label>
+            @if (!_online)
+            {
+                <button class="arcade-btn" @onclick="NewGame">NEW GAME</button>
+            }
+            <div class="mode-switch" role="group" aria-label="Game mode">
+                <button class="@(!_online && PlayAgainstComputer ? "active" : "")" @onclick="() => SetMode(false, true)">VS COMPUTER</button>
+                <button class="@(!_online && !PlayAgainstComputer ? "active" : "")" @onclick="() => SetMode(false, false)">2 PLAYERS</button>
+                <button class="@(_online ? "active" : "")" @onclick="() => SetMode(true, false)">ONLINE</button>
+            </div>
         </div>
     </div>
+
+    @if (_online)
+    {
+        <OnlineLobby @ref="_lobby" Game="@MatchGames.Chess" SeatLabels="@(new[] { "White", "Black" })" OnRoomChanged="OnRoomChanged" />
+    }
 
     <div class="board-wrapper">
         <div class="chess-board">

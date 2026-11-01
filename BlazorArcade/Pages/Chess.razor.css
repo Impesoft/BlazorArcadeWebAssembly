@@ -142,3 +142,33 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
+
+.mode-switch {
+    display: flex;
+    border: 2px solid #00ffff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.mode-switch button {
+    padding: 8px 12px;
+    background: #111122;
+    color: #00ffff;
+    border: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.mode-switch button + button {
+    border-left: 1px solid #00ffff;
+}
+
+.mode-switch button.active {
+    background: #00ffff;
+    color: #111122;
+}
+
+.controls {
+    flex-wrap: wrap;
+}

@@ -1,0 +1,169 @@
+@* Room lobby for two-player online games: create or join by code, share a link, track whose turn it is, rematch. *@
+@implements IAsyncDisposable
+@inject ArcadeBackendOptions Backend
+@inject PlayerProfile Profile
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="lobby">
+    @if (!Backend.IsConfigured)
+    {
+        <p class="muted">Online play isn't available on this server.</p>
+    }
+    else if (_client?.Room is not { } room)
+    {
+        <div class="row">
+            <input @bind="_name" @bind:event="oninput" maxlength="@ScoreGames.MaxNameLength" placeholder="Your name" aria-label="Your name" />
+        </div>
+        <div class="row">
+            <button class="primary" disabled="@(_busy || !HasName)" @onclick="CreateAsync">Create room</button>
+            <span class="or">or</span>
+            <input class="code" @bind="_code" @bind:event="oninput" maxlength="4" placeholder="CODE" aria-label="Room code" />
+            <button disabled="@(_busy || !HasName || _code.Trim().Length != 4)" @onclick="JoinAsync">Join</button>
+        </div>
+    }
+    else
+    {
+        <div class="row room-row">
+            <span>Room <strong class="room-code">@room.Code</strong></span>
+            <button class="small" @onclick="CopyLinkAsync">@(_copied ? "Link copied!" : "Copy invite link")</button>
+            <button class="small" @onclick="LeaveAsync">Leave</button>
+        </div>
+
+        <div class="players">
+            @for (int seat = 0; seat < 2; seat++)
+            {
+                var s = room.Seats.FirstOrDefault(x => x.Seat == seat);
+                <div class="player @(room.Status == RoomStatus.Playing && room.Turn == seat ? "on-turn" : "")">
+                    <span class="swatch seat-@seat"></span>
+                    <span class="label">@SeatLabels[seat]</span>
+                    <span class="name">@(s?.Name ?? "waiting…")@(seat == _client.Seat ? " (you)" : "")</span>
+                    @if (s is { Connected: false })
+                    {
+                        <span class="away">reconnecting…</span>
+                    }
+                </div>
+            }
+        </div>
+
+        <p class="status">@StatusText(room)</p>
+
+        @if (room.Status == RoomStatus.Finished && room.Seats.Count == 2)
+        {
+            bool asked = room.RematchVotes.Contains(_client.Seat);
+            <button class="primary" disabled="@asked" @onclick="RematchAsync">@(asked ? "Waiting for opponent…" : room.RematchVotes.Count > 0 ? "Accept rematch" : "Rematch")</button>
+        }
+    }
+
+    @if (_client?.Error is { } error)
+    {
+        <p class="error">@error</p>
+    }
+    @if (_client != null && _client.Room != null && !_client.IsConnected)
+    {
+        <p class="error">Connection lost, trying to reconnect…</p>
+    }
+</div>
+
+@code {
+    /// <summary>Game id from <see cref="MatchGames"/>.</summary>
+    [Parameter, EditorRequired] public string Game { get; set; } = "";
+
+    /// <summary>What to call seat 0 and seat 1, e.g. White/Black.</summary>
+    [Parameter] public string[] SeatLabels { get; set; } = { "Player 1", "Player 2" };
+
+    /// <summary>Raised on every room change with the room (null after leaving) and our seat.</summary>
+    [Parameter] public EventCallback<(RoomState? Room, int Seat)> OnRoomChanged { get; set; }
+
+    private MatchClient? _client;
+    private string _name = "", _code = "";
+    private bool _busy, _copied;
+
+    private bool HasName => !string.IsNullOrWhiteSpace(_name);
+
+    /// <summary>Sends a move for the local player; returns the server's error, or null when accepted.</summary>
+    public Task<string?> SendMoveAsync(string move) => _client?.SendMoveAsync(move) ?? Task.FromResult<string?>("Not connected.");
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Backend.IsConfigured) return;
+        _client = new MatchClient(Backend);
+        _client.Changed += OnClientChanged;
+        _name = await Profile.GetNameAsync();
+
+        // Opened from an invite link: join straight away if we know who you are.
+        var query = new Uri(Nav.Uri).Query;
+        var room = System.Web.HttpUtility.ParseQueryString(query)["room"];
+        if (!string.IsNullOrEmpty(room))
+        {
+            _code = room.ToUpperInvariant();
+            if (HasName) await JoinAsync();
+        }
+    }
+
+    private void OnClientChanged() => InvokeAsync(async () =>
+    {
+        await OnRoomChanged.InvokeAsync((_client!.Room, _client.Seat));
+        StateHasChanged();
+    });
+
+    private async Task CreateAsync()
+    {
+        _busy = true;
+        await Profile.SetNameAsync(_name.Trim());
+        await _client!.CreateAsync(Game, _name, await Profile.GetTokenAsync());
+        _busy = false;
+    }
+
+    private async Task JoinAsync()
+    {
+        _busy = true;
+        await Profile.SetNameAsync(_name.Trim());
+        await _client!.JoinAsync(_code, _name, await Profile.GetTokenAsync());
+        _busy = false;
+    }
+
+    private Task RematchAsync() => _client!.RequestRematchAsync();
+
+    private async Task LeaveAsync()
+    {
+        await _client!.LeaveAsync();
+        _copied = false;
+    }
+
+    private async Task CopyLinkAsync()
+    {
+        var link = Nav.GetUriWithQueryParameter("room", _client!.Room!.Code);
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", link);
+            _copied = true;
+        }
+        catch (JSException)
+        {
+            // Clipboard blocked: the code itself is on screen to read out.
+        }
+    }
+
+    private string StatusText(RoomState room)
+    {
+        string Name(int seat) => room.Seats.FirstOrDefault(s => s.Seat == seat)?.Name ?? SeatLabels[seat];
+        return room.Status switch
+        {
+            RoomStatus.WaitingForOpponent => "Share the code or the link. The game starts when someone joins.",
+            RoomStatus.Playing when room.Turn == _client!.Seat => "Your move.",
+            RoomStatus.Playing => $"Waiting for {Name(room.Turn)}…",
+            _ when room.IsDraw => "It's a draw.",
+            _ when room.Winner == _client!.Seat => "You win! 🎉",
+            _ when room.Winner is int w => $"{Name(w)} wins.",
+            _ => "Game over.",
+        };
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_client == null) return;
+        _client.Changed -= OnClientChanged;
+        await _client.DisposeAsync();
+    }
+}
