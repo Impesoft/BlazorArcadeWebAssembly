@@ -1,0 +1,149 @@
+.lobby {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: min(520px, 100%);
+    margin: 10px auto;
+    padding: 12px 14px;
+    background: rgba(10, 10, 30, 0.85);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.25);
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    background: #0b0b18;
+    color: #fff;
+    border: 1px solid #446;
+    border-radius: 6px;
+    font: inherit;
+}
+
+input.code {
+    flex: 0 0 76px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-align: center;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+button {
+    padding: 7px 14px;
+    background: #222244;
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button.primary {
+    background: #00b8c4;
+    color: #001;
+    border-color: #00ffff;
+}
+
+button.small {
+    padding: 4px 10px;
+    font-size: 13px;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.or {
+    color: #888;
+    font-size: 13px;
+}
+
+.room-row {
+    justify-content: space-between;
+}
+
+.room-code {
+    font-family: monospace;
+    font-size: 20px;
+    letter-spacing: 4px;
+    color: #ffff66;
+}
+
+.players {
+    display: grid;
+    gap: 4px;
+}
+
+.player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+}
+
+.player.on-turn {
+    border-color: #ffff66;
+    background: rgba(255, 255, 102, 0.08);
+}
+
+.swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+}
+
+/* Seat 0 moves first: white in chess, red in Connect 4. Pages can restyle through ::deep if needed. */
+.swatch.seat-0 { background: linear-gradient(135deg, #fff, #ff4d4d); }
+.swatch.seat-1 { background: linear-gradient(135deg, #333, #ffd700); }
+
+.label {
+    width: 64px;
+    color: #9cf;
+    font-size: 13px;
+}
+
+.name {
+    flex: 1;
+    font-weight: bold;
+}
+
+.away {
+    color: #ffaa44;
+    font-size: 12px;
+}
+
+.status {
+    margin: 0;
+    text-align: center;
+    color: #fff;
+}
+
+.muted {
+    margin: 0;
+    color: #aaa;
+    text-align: center;
+}
+
+.error {
+    margin: 0;
+    color: #ff6b6b;
+    text-align: center;
+}

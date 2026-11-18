@@ -1,0 +1,47 @@
+@namespace BlazorArcade.Pages
+@inject NavigationManager Nav
+
+@*
+    A game made with Godot, exported for the web to wwwroot/godot/<Slug>. Its own page loads the
+    shared engine and the game's data pack; this one frames it with the arcade's controls. Render it
+    statically: an interactive render would replace the iframe and load the game a second time.
+*@
+<div class="gd-page">
+
+<video muted loop id="bg">
+    <source src="/css/BGTunnel.mp4" type="video/mp4" />
+</video>
+
+<div class="top-controls">
+    <a class="arcade-btn" href="@ArcadeNav.Hub(Nav)">Home</a>
+    <button class="arcade-btn" onclick="document.getElementById('gd-frame').requestFullscreen()">Full Screen</button>
+</div>
+
+<div class="gd-container">
+    <div class="gd-frame">
+        <iframe id="gd-frame" src="/godot/@Slug/index.html" title="@Title" allow="fullscreen; autoplay; gamepad"></iframe>
+    </div>
+
+    <p class="gd-keyboard-note">@Title is made for a keyboard; it's best played on a computer.</p>
+
+    <div class="controls-panel">
+        <div class="desktop-instructions">
+            @foreach (var (keys, action) in Controls)
+            {
+                <span><strong>@action:</strong> @keys</span>
+            }
+        </div>
+    </div>
+</div>
+
+</div>
+
+@code {
+    /// <summary>The game's folder under wwwroot/godot.</summary>
+    [Parameter, EditorRequired] public string Slug { get; set; } = "";
+
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+
+    /// <summary>What to press, and what it does.</summary>
+    [Parameter] public (string Keys, string Action)[] Controls { get; set; } = [];
+}

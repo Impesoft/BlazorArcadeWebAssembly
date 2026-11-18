@@ -1,0 +1,92 @@
+@* Online top scores for one game, with an optional "submit your score" form. Renders nothing when no backend is configured. *@
+@inject ScoreboardClient Scoreboard
+@inject PlayerProfile Profile
+
+@if (Scoreboard.IsEnabled)
+{
+    <div class="leaderboard">
+        <h3>@Title</h3>
+
+        @if (Score > 0 && _submittedScore != Score)
+        {
+            <form class="submit-row" @onsubmit="SubmitAsync" @onsubmit:preventDefault>
+                <input @bind="_name" @bind:event="oninput" maxlength="@ScoreGames.MaxNameLength" placeholder="Your name" aria-label="Your name" />
+                <button type="submit" disabled="@(_busy || string.IsNullOrWhiteSpace(_name))">Submit @Score</button>
+            </form>
+        }
+        else if (_rank is int rank)
+        {
+            <p class="rank">@(rank > 0 ? $"You placed #{rank}!" : "Score saved, but not quite on the board this time.")</p>
+        }
+
+        @if (_error != null)
+        {
+            <p class="error">@_error</p>
+        }
+
+        @if (_top == null)
+        {
+            <p class="muted">@(_loading ? "Loading scores…" : "Scores are unavailable right now.")</p>
+        }
+        else if (_top.Count == 0)
+        {
+            <p class="muted">No scores yet. Be the first!</p>
+        }
+        else
+        {
+            <ol>
+                @foreach (var entry in _top.Take(Take))
+                {
+                    <li class="@(entry.Rank == _rank ? "mine" : "")">
+                        <span class="pos">@entry.Rank</span>
+                        <span class="name">@entry.Player</span>
+                        <span class="score">@entry.Score.ToString("N0")</span>
+                    </li>
+                }
+            </ol>
+        }
+    </div>
+}
+
+@code {
+    /// <summary>Game id as listed in <see cref="ScoreGames.MaxScore"/>.</summary>
+    [Parameter, EditorRequired] public string Game { get; set; } = "";
+
+    /// <summary>The score just achieved; when positive, the player is offered to submit it.</summary>
+    [Parameter] public int Score { get; set; }
+
+    [Parameter] public int Take { get; set; } = 5;
+    [Parameter] public string Title { get; set; } = "Online high scores";
+
+    private IReadOnlyList<ScoreEntry>? _top;
+    private bool _loading = true, _busy;
+    private string _name = "";
+    private string? _error;
+    private int? _rank;
+    private int _submittedScore;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!Scoreboard.IsEnabled) return;
+        _name = await Profile.GetNameAsync();
+        _top = await Scoreboard.GetTopAsync(Game, Take);
+        _loading = false;
+    }
+
+    private async Task SubmitAsync()
+    {
+        _busy = true;
+        _error = null;
+        await Profile.SetNameAsync(_name.Trim());
+        var result = await Scoreboard.SubmitAsync(Game, _name, Score);
+        _busy = false;
+        if (result == null)
+        {
+            _error = "Couldn't save your score. Try again in a moment.";
+            return;
+        }
+        _submittedScore = Score;
+        _rank = result.Rank;
+        _top = result.Top;
+    }
+}

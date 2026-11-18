@@ -1,0 +1,327 @@
+#bg {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.25;
+    object-fit: cover;
+}
+
+.top-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 12px;
+    z-index: 10;
+}
+
+.arcade-btn {
+    background: linear-gradient(135deg, #111122 0%, #222244 100%);
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.arcade-btn:hover:not(:disabled) {
+    background: #00ffff;
+    color: #111122;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+.arcade-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+/* The MSX screen is 4:3 at 256x192; keep it there. */
+.km-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+.km-hud {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #000;
+    border: 3px solid #5455ed;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 6px 10px;
+}
+
+.hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hud-label {
+    font-size: 11px;
+    color: #7d76fc;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.hud-value {
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.hud-value.small { font-size: 13px; }
+.hud-value.white { color: #fff; }
+.hud-value.yellow { color: #e6ce80; }
+.hud-value.cyan { color: #42ebf5; }
+.hud-value.red { color: #fc5554; }
+
+.km-progress {
+    width: 100%;
+    height: 4px;
+    background: #222;
+    border-left: 3px solid #5455ed;
+    border-right: 3px solid #5455ed;
+    box-sizing: border-box;
+}
+
+.km-progress div {
+    height: 100%;
+    background: linear-gradient(90deg, #21b03b, #5edc78);
+}
+
+.km-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    border: 3px solid #5455ed;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 24px rgba(84, 85, 237, 0.4);
+    overflow: hidden;
+}
+
+#km-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.km-banner {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #e6ce80;
+    font-size: clamp(16px, 3.5vw, 26px);
+    font-weight: 900;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.km-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: safe center;
+    overflow-y: auto;
+    gap: 6px;
+    padding: 14px;
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.78);
+}
+
+.km-overlay h2 {
+    margin: 0 0 4px;
+    font-size: clamp(22px, 4.5vw, 34px);
+    color: #e6ce80;
+    letter-spacing: 3px;
+}
+
+.km-overlay h2.red { color: #fc5554; }
+
+.km-overlay p {
+    margin: 0 0 6px;
+    color: #ccc;
+}
+
+.km-title {
+    outline: none;
+    margin: 0;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: clamp(34px, 9vw, 72px);
+    letter-spacing: 4px;
+    color: #fc5554;
+    text-shadow: 3px 3px 0 #5455ed, 6px 6px 0 #000;
+}
+
+.km-tribute {
+    font-size: 12px;
+    color: #7d76fc !important;
+    letter-spacing: 1px;
+}
+
+.km-tips {
+    margin: 4px 0;
+    padding: 0;
+    list-style: none;
+    max-width: 520px;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.km-tips li { margin: 3px 0; }
+
+.q {
+    display: inline-block;
+    padding: 0 4px;
+    background: #966e3c;
+    color: #e6ce80;
+    font-weight: bold;
+}
+
+.km-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px 6px;
+    max-width: 520px;
+    margin: 4px 0 10px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.gem {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    transform: rotate(45deg);
+    font-size: 10px;
+    font-weight: bold;
+    color: #000;
+}
+
+.gem.blue { background: #7d76fc; }
+.gem.red { background: #fc5554; }
+.gem.yellow { background: #e6ce80; }
+.gem.cyan { background: #42ebf5; }
+.gem.green { background: #5edc78; }
+.gem.magenta { background: #c95bba; }
+
+.modal-btn {
+    background: #5455ed;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 9px 26px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.modal-btn:hover {
+    transform: scale(1.05);
+}
+
+.controls-panel {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.desktop-instructions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 18px;
+    color: #7d76fc;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(84, 85, 237, 0.5);
+}
+
+.km-touch {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.km-dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
+    grid-template-areas: ". up ." "left . right" ". down .";
+    gap: 2px;
+}
+
+.dpad-btn {
+    background: rgba(20, 20, 60, 0.85);
+    color: #fff;
+    border: 2px solid #5455ed;
+    border-radius: 8px;
+    font-size: 20px;
+    touch-action: none;
+}
+
+.fire-btn {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #d4524d;
+    color: #fff;
+    border: 3px solid #fff;
+    font-weight: bold;
+    font-size: 18px;
+    touch-action: none;
+}
+
+@media (pointer: coarse), (max-width: 700px) {
+    .km-touch { display: flex; }
+    .desktop-instructions { display: none; }
+}
+
+@media (max-width: 560px) {
+    .hide-narrow { display: none; }
+    .hud-value { font-size: 14px; }
+}

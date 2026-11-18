@@ -1,0 +1,8 @@
+Godot Engine uses the MIT license.
+Copyright (c) 2014-present Godot Engine contributors.
+Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+Engine license and third-party attributions: https://godotengine.org/license/
+
+Character design follows the reference supplied by the user. Character
+sprites, enemy sprites and environments were produced using the built-in image generation
+tool. Source prompt specifications are preserved in the project.

@@ -1,0 +1,115 @@
+@page "/Knightmare"
+@namespace BlazorArcade.Pages
+@using BlazorArcade.GameLogic
+
+<video muted loop id="bg">
+    <source src="./css/BGTunnel.mp4" type="video/mp4" />
+</video>
+
+<div class="top-controls">
+    <button class="arcade-btn" @onclick="@(() => _nav.NavigateTo("/"))">Home</button>
+    <button class="arcade-btn" @onclick="NewGame">New Game</button>
+    <button class="arcade-btn" @onclick="TogglePause" disabled="@(_game.State != KnightmareState.Playing)">@(_game.IsPaused ? "Resume" : "Pause")</button>
+</div>
+
+<div class="km-container">
+    <div class="km-hud">
+        <div class="hud-item">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-value white">@_game.Score.ToString("D7")</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">HI</span>
+            <span class="hud-value yellow">@_game.HighScore.ToString("D7")</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">STAGE</span>
+            <span class="hud-value cyan">@StageNumber</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">LIVES</span>
+            <span class="hud-value red">@(_game.Lives > 0 ? new string('♞', Math.Min(_game.Lives, 6)) : "-")</span>
+        </div>
+        <div class="hud-item hide-narrow">
+            <span class="hud-label">WEAPON</span>
+            <span class="hud-value small white">@WeaponName</span>
+        </div>
+        <div class="hud-item hide-narrow">
+            <span class="hud-label">SHIELD</span>
+            <span class="hud-value small cyan">@(_game.Shield > 0 ? new string('■', _game.Shield) : "-")</span>
+        </div>
+    </div>
+    <div class="km-progress"><div style="width:@(_game.StageProgress * 100)%"></div></div>
+
+    <div class="km-stage">
+        <canvas id="km-canvas" width="@KnightmareRenderer.Width" height="@KnightmareRenderer.Height"></canvas>
+
+        @if (_game.Message is { } message && _game.State == KnightmareState.Playing && !_game.IsPaused)
+        {
+            <div class="km-banner">@message</div>
+        }
+
+        @if (_game.State == KnightmareState.Title)
+        {
+            <div class="km-overlay">
+                <h1 class="km-title">KNIGHTMARE</h1>
+                <p class="km-tribute">A tribute to Konami's 1986 MSX classic</p>
+                <ul class="km-tips">
+                    <li>The screen scrolls on its own. If a wall pins you to the bottom edge, you're crushed.</li>
+                    <li>Shoot <span class="q">?</span> blocks to release a crystal. Shoot the crystal to change what it gives you.</li>
+                </ul>
+                <div class="km-legend">
+                    <span class="gem blue">2</span>Double arrow
+                    <span class="gem red">F</span>Fire
+                    <span class="gem yellow">B</span>Boomerang
+                    <span class="gem cyan">S</span>Shield
+                    <span class="gem green">↑</span>Speed
+                    <span class="gem magenta">✱</span>1000 pts
+                </div>
+                <button class="modal-btn" @onclick="NewGame">PUSH START</button>
+            </div>
+        }
+        else if (_game.State == KnightmareState.StageClear)
+        {
+            <div class="km-overlay">
+                <h2>STAGE @StageNumber CLEAR!</h2>
+                <p>@_game.StageName is safe again.</p>
+                <button class="modal-btn" @onclick="NextStage">NEXT STAGE</button>
+            </div>
+        }
+        else if (_game.State == KnightmareState.GameOver)
+        {
+            <div class="km-overlay">
+                <h2 class="red">GAME OVER</h2>
+                <p>Score: @_game.Score</p>
+                <button class="modal-btn" @onclick="NewGame">CONTINUE?</button>
+                <Leaderboard Game="@ScoreGames.Knightmare" Score="@_game.Score" />
+            </div>
+        }
+        else if (_game.IsPaused)
+        {
+            <div class="km-overlay">
+                <h2>PAUSE</h2>
+                <button class="modal-btn" @onclick="TogglePause">RESUME</button>
+            </div>
+        }
+    </div>
+
+    <div class="controls-panel">
+        <div class="desktop-instructions">
+            <span><strong>Move:</strong> Arrows / WASD</span>
+            <span><strong>Fire:</strong> Space / Z (hold for autofire)</span>
+            <span><strong>Pause:</strong> P</span>
+        </div>
+
+        <div class="km-touch">
+            <div class="km-dpad">
+                <button class="dpad-btn" style="grid-area:up" data-input-bit="@((int)KnightmareInput.Up)">▲</button>
+                <button class="dpad-btn" style="grid-area:left" data-input-bit="@((int)KnightmareInput.Left)">◀</button>
+                <button class="dpad-btn" style="grid-area:right" data-input-bit="@((int)KnightmareInput.Right)">▶</button>
+                <button class="dpad-btn" style="grid-area:down" data-input-bit="@((int)KnightmareInput.Down)">▼</button>
+            </div>
+            <button class="fire-btn" data-input-bit="@((int)KnightmareInput.Fire)">FIRE</button>
+        </div>
+    </div>
+</div>

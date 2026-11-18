@@ -8,12 +8,20 @@
 
 <div class="controls">
     <button @onclick="@(() => _nav.NavigateTo("/"))">Home</button>
-    <button @onclick="RestartGame">Restart</button>
-    <button @onclick="ToggleMode">Mode: @(IsAiMode ? "1 Player (vs AI)" : "2 Players")</button>
+    @if (!_online)
+    {
+        <button @onclick="RestartGame">Restart</button>
+    }
+    <button @onclick="ToggleMode">Mode: @(_online ? "Online" : IsAiMode ? "1 Player (vs AI)" : "2 Players")</button>
 </div>
 
+@if (_online)
+{
+    <OnlineLobby @ref="_lobby" Game="@MatchGames.Connect4" SeatLabels="@(new[] { "Red", "Yellow" })" OnRoomChanged="OnRoomChanged" />
+}
+
 <div class="game-container-connect4" tabindex="0" @ref="GameContainer">
-@if (!IsGameStarted)
+@if (!IsGameStarted && !_online)
 {
     <div class="game-over-overlay" style="z-index: 1000; position: absolute; inset: 0; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h2 style="color: white; margin-bottom: 20px; font-family: 'Press Start 2P', monospace;">Connect 4</h2>

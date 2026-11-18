@@ -1,0 +1,22 @@
+@page "/Mosslight"
+@namespace BlazorArcade.Pages
+
+@* A Godot web game from wwwroot/godot; GodotGame frames its own loading page. *@
+<GodotGame Slug="mosslight" Title="Mosslight" Controls="Controls" />
+
+@code {
+    private static readonly (string, string)[] Controls =
+    [
+        ("WASD / arrows", "Move"),
+        ("Shift", "Run"),
+        ("Space", "Dodge"),
+        ("E", "Heal / interact"),
+        ("J", "Spirit bolt"),
+        ("Q", "World map"),
+        ("Tab / wheel", "Close-up"),
+        ("C", "Character portrait"),
+        ("R", "Back to the glade"),
+        ("M", "Sound"),
+        ("Escape", "Pause"),
+    ];
+}

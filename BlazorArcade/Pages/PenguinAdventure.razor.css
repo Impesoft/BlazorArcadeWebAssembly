@@ -1,0 +1,309 @@
+#bg {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+    opacity: 0.25;
+    object-fit: cover;
+}
+
+.top-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 12px;
+    z-index: 10;
+}
+
+.arcade-btn {
+    background: linear-gradient(135deg, #111122 0%, #222244 100%);
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.arcade-btn:hover:not(:disabled) {
+    background: #00ffff;
+    color: #111122;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+.arcade-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+/* The MSX screen is 4:3 at 256x192; keep it there. */
+.pa-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+.pa-hud {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #000;
+    border: 3px solid #3a8bd8;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 6px 10px;
+}
+
+.hud-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hud-label {
+    font-size: 11px;
+    color: #8cc4f4;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.hud-value {
+    font-size: 17px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.hud-value.small { font-size: 13px; }
+.hud-value.white { color: #fff; }
+.hud-value.yellow { color: #e6ce80; }
+.hud-value.cyan { color: #42ebf5; }
+.hud-value.red { color: #fc5554; }
+
+/* The road to the goal, with Penta running along it. */
+.pa-progress {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background: #222;
+    border-left: 3px solid #3a8bd8;
+    border-right: 3px solid #3a8bd8;
+    box-sizing: border-box;
+}
+
+.pa-progress div {
+    height: 100%;
+    background: linear-gradient(90deg, #3a8bd8, #9fd4ff);
+}
+
+.pa-progress span {
+    position: absolute;
+    top: -3px;
+    width: 8px;
+    height: 14px;
+    margin-left: -4px;
+    border-radius: 4px 4px 2px 2px;
+    background: #111;
+    border: 1px solid #fff;
+}
+
+.hud-value.low {
+    color: #fc5554;
+    animation: pa-blink 0.5s steps(1) infinite;
+}
+
+@keyframes pa-blink {
+    50% { opacity: 0.3; }
+}
+
+.pa-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    border: 3px solid #3a8bd8;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 24px rgba(58, 139, 216, 0.4);
+    overflow: hidden;
+}
+
+#pa-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+.pa-banner {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 16px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #e6ce80;
+    font-size: clamp(16px, 3.5vw, 26px);
+    font-weight: 900;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.pa-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: safe center;
+    overflow-y: auto;
+    gap: 6px;
+    padding: 14px;
+    text-align: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.78);
+}
+
+.pa-overlay h2 {
+    margin: 0 0 4px;
+    font-size: clamp(22px, 4.5vw, 34px);
+    color: #e6ce80;
+    letter-spacing: 3px;
+}
+
+.pa-overlay h2.red { color: #fc5554; }
+
+.pa-overlay p {
+    margin: 0 0 6px;
+    color: #ccc;
+}
+
+.pa-title {
+    outline: none;
+    margin: 0;
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-size: clamp(24px, 6vw, 48px);
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 3px 3px 0 #3a8bd8, 6px 6px 0 #000;
+}
+
+.pa-tribute {
+    font-size: 12px;
+    color: #8cc4f4 !important;
+    letter-spacing: 1px;
+}
+
+.pa-tips {
+    margin: 4px 0;
+    padding: 0;
+    list-style: none;
+    max-width: 520px;
+    font-size: 13px;
+    color: #ddd;
+}
+
+.pa-tips li { margin: 3px 0; }
+
+.modal-btn {
+    background: #3a8bd8;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 9px 26px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.modal-btn:hover {
+    transform: scale(1.05);
+}
+
+.controls-panel {
+    width: 100%;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.desktop-instructions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 18px;
+    color: #8cc4f4;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(58, 139, 216, 0.5);
+}
+
+.pa-touch {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 440px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.pa-dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
+    grid-template-areas: ". up ." "left . right" ". down .";
+    gap: 2px;
+}
+
+.dpad-btn {
+    background: rgba(20, 20, 60, 0.85);
+    color: #fff;
+    border: 2px solid #3a8bd8;
+    border-radius: 8px;
+    font-size: 20px;
+    touch-action: none;
+}
+
+.jump-btn {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #d4524d;
+    color: #fff;
+    border: 3px solid #fff;
+    font-weight: bold;
+    font-size: 18px;
+    touch-action: none;
+}
+
+@media (pointer: coarse), (max-width: 700px) {
+    .pa-touch { display: flex; }
+    .desktop-instructions { display: none; }
+}
+
+@media (max-width: 560px) {
+    .hide-narrow { display: none; }
+    .hud-value { font-size: 14px; }
+}

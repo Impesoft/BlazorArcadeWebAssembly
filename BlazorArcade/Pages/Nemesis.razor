@@ -1,0 +1,117 @@
+@namespace BlazorArcade.Pages
+@page "/Nemesis"
+
+<div class="nm-page">
+
+<video muted loop id="bg">
+    <source src="/css/BGTunnel.mp4" type="video/mp4" />
+</video>
+
+<div class="top-controls">
+    <button class="arcade-btn" @onclick="@(() => _nav.NavigateTo(ArcadeNav.Hub(_nav)))">Home</button>
+    <button class="arcade-btn" @onclick="NewGame">New Game</button>
+    <button class="arcade-btn" @onclick="TogglePause" disabled="@(!IsPlaying)">@(_hud.Paused ? "Resume" : "Pause")</button>
+</div>
+
+<div class="nm-container">
+    <div class="nm-hud">
+        <div class="hud-item">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-value white">@_hud.Score.ToString("D7")</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">HI</span>
+            <span class="hud-value yellow">@_hud.HighScore.ToString("D7")</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">STAGE</span>
+            <span class="hud-value cyan">@_hud.Stage</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">LIVES</span>
+            <span class="hud-value red">@(_hud.Lives > 0 ? new string('▶', Math.Min(_hud.Lives, 6)) : "-")</span>
+        </div>
+        <div class="hud-item hide-narrow">
+            <span class="hud-label">SHIELD</span>
+            <span class="hud-value small cyan">@(_hud.Shield > 0 ? new string('■', _hud.Shield) : "-")</span>
+        </div>
+    </div>
+    <div class="nm-progress"><div style="width:@(_hud.Progress)%"></div></div>
+
+    <div class="nm-stage">
+        <canvas id="nm-canvas" @ref="_canvas" width="256" height="192"></canvas>
+
+        @if (_hud.Message is { } message && IsPlaying && !_hud.Paused)
+        {
+            <div class="nm-banner">@message</div>
+        }
+
+        @if (_hud.State == "Title")
+        {
+            <div class="nm-overlay">
+                <h1 class="nm-title">NEMESIS</h1>
+                <p class="nm-tribute">A tribute to Konami's 1986 MSX classic, known elsewhere as Gradius</p>
+                <ul class="nm-tips">
+                    <li>Shoot down a whole formation, or a red ship, for a capsule. Each capsule lights the next slot of the power meter.</li>
+                    <li>Press POWER to take what is lit. Dying costs every power-up, and the terrain is always fatal.</li>
+                </ul>
+                <button class="modal-btn" @onclick="NewGame">PUSH START</button>
+            </div>
+        }
+        else if (_hud.State == "StageClear")
+        {
+            <div class="nm-overlay">
+                <h2>STAGE @_hud.Stage CLEAR!</h2>
+                <p>Big Core is down over the @_hud.StageName.</p>
+                <button class="modal-btn" @onclick="NextStage">NEXT STAGE</button>
+            </div>
+        }
+        else if (_hud.State == "GameOver")
+        {
+            <div class="nm-overlay">
+                <h2 class="red">GAME OVER</h2>
+                <p>Score: @_hud.Score</p>
+                <button class="modal-btn" @onclick="NewGame">CONTINUE?</button>
+                <Leaderboard Game="@ScoreGames.Nemesis" Score="@_hud.Score" />
+            </div>
+        }
+        else if (_hud.Paused)
+        {
+            <div class="nm-overlay">
+                <h2>PAUSE</h2>
+                <button class="modal-btn" @onclick="TogglePause">RESUME</button>
+            </div>
+        }
+    </div>
+
+    <div class="nm-meter" aria-label="Power meter">
+        @for (int slot = 0; slot < Slots.Length; slot++)
+        {
+            <div class="nm-slot @SlotClass(slot)">@Slots[slot]</div>
+        }
+    </div>
+
+    <div class="controls-panel" @ref="_controls">
+        <div class="desktop-instructions">
+            <span><strong>Move:</strong> Arrows / WASD</span>
+            <span><strong>Fire:</strong> Space / Z (hold for autofire)</span>
+            <span><strong>Power:</strong> X / Shift</span>
+            <span><strong>Pause:</strong> P</span>
+        </div>
+
+        <div class="nm-touch">
+            <div class="nm-dpad">
+                <button class="dpad-btn" style="grid-area:up" data-input-bit="1">▲</button>
+                <button class="dpad-btn" style="grid-area:left" data-input-bit="4">◀</button>
+                <button class="dpad-btn" style="grid-area:right" data-input-bit="8">▶</button>
+                <button class="dpad-btn" style="grid-area:down" data-input-bit="2">▼</button>
+            </div>
+            <div class="nm-buttons">
+                <button class="power-btn" data-input-bit="32">POWER</button>
+                <button class="fire-btn" data-input-bit="16">FIRE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

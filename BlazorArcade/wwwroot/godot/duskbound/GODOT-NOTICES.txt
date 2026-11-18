@@ -1,0 +1,8 @@
+Godot Engine is MIT licensed.
+Copyright (c) 2014-present Godot Engine contributors.
+Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+Engine license and third-party attributions: https://godotengine.org/license/
+
+Original character, guard, background and stone texture assets were
+produced with the built-in image generation tool. This is an original
+game inspired by classic cinematic platformers, with no franchise assets.

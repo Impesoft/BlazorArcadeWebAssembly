@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+    <!-- Required by the [JSImport] source generator (Crypt Crawler's zero-copy framebuffer interop) -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 
@@ -13,6 +15,7 @@
     <PackageReference Include="ChessDotNet" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.9" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.9" />
     <PackageReference Include="Toolbelt.Blazor.PWA.Updater" Version="3.2.0" />
   </ItemGroup>
 
@@ -24,6 +27,10 @@
     <Content Update="wwwroot\CNAME">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorArcade.Shared\BlazorArcade.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,22 @@
+@page "/Duskbound"
+@namespace BlazorArcade.Pages
+
+@* A Godot web game from wwwroot/godot; GodotGame frames its own loading page. *@
+<GodotGame Slug="duskbound" Title="Duskbound" Controls="Controls" />
+
+@code {
+    private static readonly (string, string)[] Controls =
+    [
+        ("Enter", "Start / resume"),
+        ("A D / arrows", "Move"),
+        ("Shift", "Run"),
+        ("Space", "Jump (hold for distance)"),
+        ("Up / Down", "Climb up / let go"),
+        ("J", "Strike"),
+        ("K", "Parry"),
+        ("E", "Use"),
+        ("R", "Retry checkpoint"),
+        ("M", "Sound"),
+        ("P / Escape", "Pause"),
+    ];
+}

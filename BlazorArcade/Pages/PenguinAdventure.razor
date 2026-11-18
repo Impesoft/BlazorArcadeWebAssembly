@@ -1,0 +1,113 @@
+@namespace BlazorArcade.Pages
+@page "/PenguinAdventure"
+
+<div class="pa-page">
+
+<video muted loop id="bg">
+    <source src="/css/BGTunnel.mp4" type="video/mp4" />
+</video>
+
+<div class="top-controls">
+    <button class="arcade-btn" @onclick="@(() => _nav.NavigateTo(ArcadeNav.Hub(_nav)))">Home</button>
+    <button class="arcade-btn" @onclick="NewGame">New Game</button>
+    <button class="arcade-btn" @onclick="TogglePause" disabled="@(!IsPlaying)">@(_hud.Paused ? "Resume" : "Pause")</button>
+</div>
+
+<div class="pa-container">
+    <div class="pa-hud">
+        <div class="hud-item">
+            <span class="hud-label">SCORE</span>
+            <span class="hud-value white">@_hud.Score.ToString("D7")</span>
+        </div>
+        <div class="hud-item hide-narrow">
+            <span class="hud-label">HI</span>
+            <span class="hud-value yellow">@_hud.HighScore.ToString("D7")</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">TIME</span>
+            <span class="hud-value @(IsPlaying && _hud.Time <= 10 ? "low" : "cyan")">@_hud.Time</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">REST</span>
+            <span class="hud-value white">@(_hud.Distance)m</span>
+        </div>
+        <div class="hud-item hide-narrow">
+            <span class="hud-label">SPEED</span>
+            <span class="hud-value small cyan">@_hud.Speed km/h</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">LIVES</span>
+            <span class="hud-value red">@(_hud.Lives > 0 ? new string('●', Math.Min(_hud.Lives, 6)) : "-")</span>
+        </div>
+    </div>
+    <div class="pa-progress"><div style="width:@(_hud.Progress)%"></div><span style="left:@(_hud.Progress)%"></span></div>
+
+    <div class="pa-stage">
+        <canvas id="pa-canvas" @ref="_canvas" width="256" height="192"></canvas>
+
+        @if (_hud.Message is { } message && IsPlaying && !_hud.Paused)
+        {
+            <div class="pa-banner">@message</div>
+        }
+
+        @if (_hud.State == "Title")
+        {
+            <div class="pa-overlay">
+                <h1 class="pa-title">PENGUIN ADVENTURE</h1>
+                <p class="pa-tribute">A tribute to Konami's 1986 MSX classic</p>
+                <ul class="pa-tips">
+                    <li>The penguin princess is ill, and only the golden apple at the end of the road can save her. Run, Penta!</li>
+                    <li>Jump the crevasses, dodge the holes, seals, rocks and bats, and reach each goal before the time runs out.</li>
+                    <li>Catch fish for points. A golden fish also gives you five more seconds.</li>
+                </ul>
+                <button class="modal-btn" @onclick="NewGame">PUSH START</button>
+            </div>
+        }
+        else if (_hud.State == "StageClear")
+        {
+            <div class="pa-overlay">
+                <h2>STAGE @_hud.Stage CLEAR!</h2>
+                <p>Penta made it through the @_hud.StageName.</p>
+                <p>Time bonus: @_hud.Bonus · Fish caught: @_hud.Fish</p>
+                <button class="modal-btn" @onclick="NextStage">NEXT STAGE</button>
+            </div>
+        }
+        else if (_hud.State == "GameOver")
+        {
+            <div class="pa-overlay">
+                <h2 class="red">GAME OVER</h2>
+                <p>Score: @_hud.Score</p>
+                <button class="modal-btn" @onclick="NewGame">TRY AGAIN</button>
+                <Leaderboard Game="@ScoreGames.PenguinAdventure" Score="@_hud.Score" />
+            </div>
+        }
+        else if (_hud.Paused)
+        {
+            <div class="pa-overlay">
+                <h2>PAUSE</h2>
+                <button class="modal-btn" @onclick="TogglePause">RESUME</button>
+            </div>
+        }
+    </div>
+
+    <div class="controls-panel" @ref="_controls">
+        <div class="desktop-instructions">
+            <span><strong>Steer:</strong> Left / Right</span>
+            <span><strong>Faster / slower:</strong> Up / Down</span>
+            <span><strong>Jump:</strong> Space / Z</span>
+            <span><strong>Pause:</strong> P</span>
+        </div>
+
+        <div class="pa-touch">
+            <div class="pa-dpad">
+                <button class="dpad-btn" style="grid-area:up" data-input-bit="1">▲</button>
+                <button class="dpad-btn" style="grid-area:left" data-input-bit="4">◀</button>
+                <button class="dpad-btn" style="grid-area:right" data-input-bit="8">▶</button>
+                <button class="dpad-btn" style="grid-area:down" data-input-bit="2">▼</button>
+            </div>
+            <button class="jump-btn" data-input-bit="16">JUMP</button>
+        </div>
+    </div>
+</div>
+
+</div>
