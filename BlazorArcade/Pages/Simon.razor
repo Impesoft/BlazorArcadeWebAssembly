@@ -1,0 +1,15 @@
+@page "/Simon"
+@namespace BlazorArcade.Pages
+
+@* A Godot web game from wwwroot/godot; GodotGame frames its own loading page. *@
+<GodotGame Slug="simon" Title="Simon" Controls="Controls" />
+
+@code {
+    private static readonly (string, string)[] Controls =
+    [
+        ("Space", "Start / retry"),
+        ("Q W A S or click", "Green, red, yellow, blue"),
+        ("R", "Restart"),
+        ("M", "Sound"),
+    ];
+}

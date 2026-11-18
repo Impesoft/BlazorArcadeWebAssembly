@@ -5,6 +5,7 @@ public static class MatchGames
 {
     public const string Chess = "chess";
     public const string Connect4 = "connect4";
+    public const string Othello = "othello";
 }
 
 public static class MatchHubRoutes

@@ -24,6 +24,21 @@
 - **Block Blast!**: Authentic 8x8 block puzzle with pre-placed starter blocks, combo streak multipliers, and Web Audio sound synthesis.
 - **Crypt Crawler 3D**: Wolfenstein-style first-person shooter on a software raycaster written in C#: textured walls, floors and ceilings, sliding doors, z-buffered sprites, ghoul AI with BFS pathfinding, all art generated procedurally, blitted to a canvas through zero-copy `[JSImport]` interop.
 - **Knightmare**: Tribute to Konami's 1986 MSX vertical scroller at the MSX's native 256x192 in the TMS9918 palette: forced scrolling that can crush you against terrain, "?" blocks dropping crystals you shoot to cycle (double arrow, fire, boomerang, shield, speed), and a boss at the end of each stage.
+- **Nemesis**: Tribute to Konami's 1986 MSX horizontal shooter (Gradius): capsules light up a power meter you cash in for speed, missiles, lasers and options, with a Big Core at the end of each stage. Runs as a JavaScript module (`wwwroot/js/arcade/nemesis`).
+- **Penguin Adventure**: Tribute to Konami's 1986 MSX runner: guide Penta down the road to the golden apple, jumping crevasses and dodging seals, rocks and bats against the clock. Runs as a JavaScript module (`wwwroot/js/arcade/penguin`).
+- **Othello**: Classic disc-flipping board game against the computer, a friend on the same screen, or online through the match hub.
+
+### Godot games
+
+These are Godot 4.7 web exports (single-threaded WebGL 2) in `wwwroot/godot`, each framed by a page with its controls. They share one copy of the engine in `wwwroot/godot/engine/4.7.2`; each game folder only holds its loading page and data pack. The `godot` folder is kept out of the offline cache, so the engine only downloads when someone opens one of these games.
+
+- **Mosslight**: Hand-painted forest-medic adventure across four connected areas, from the Healer's Glade to Heartroot Sanctum.
+- **Simon**: Memory game on a procedural 3D device with synthesized tones and a saved personal best.
+- **Ember Rush**: Momentum platformer: race an orange fox through Sunbreak Coast's hills, springs and drones.
+- **Duskbound**: Cinematic platformer through three palace chambers, with ledge catches, traps and sword duels.
+- **Nullpoint Arena**: 3D arena shooter against three bots on a multi-level reactor map, with plasma, rocket and rail weapons, jump pads and three bot skill levels.
+
+These games are kept in step with the arcade on impesoft.com (`Home.Impesoft`), which serves the same `godot` folder.
 
 ---
 

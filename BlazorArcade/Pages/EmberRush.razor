@@ -1,0 +1,19 @@
+@page "/EmberRush"
+@namespace BlazorArcade.Pages
+
+@* A Godot web game from wwwroot/godot; GodotGame frames its own loading page. *@
+<GodotGame Slug="emberrush" Title="Ember Rush" Controls="Controls" />
+
+@code {
+    private static readonly (string, string)[] Controls =
+    [
+        ("Enter", "Start / resume"),
+        ("A D / arrows", "Move"),
+        ("Space / W / Up", "Jump (hold for higher)"),
+        ("Shift / X", "Dash"),
+        ("Down / S", "Roll"),
+        ("R", "Restart"),
+        ("M", "Sound"),
+        ("P / Escape", "Pause"),
+    ];
+}

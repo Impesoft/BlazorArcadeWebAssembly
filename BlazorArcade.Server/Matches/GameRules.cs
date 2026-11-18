@@ -93,3 +93,29 @@ public sealed class ChessRules : IGameRules
         }
     }
 }
+
+/// <summary>Uses the same <see cref="OthelloLogic"/> as the client's board; passes happen by themselves.</summary>
+public sealed class OthelloRules : IGameRules
+{
+    public string Game => MatchGames.Othello;
+    public IGameSession NewSession() => new Session();
+
+    private sealed class Session : IGameSession
+    {
+        private readonly OthelloLogic _board = new();
+
+        public int Turn => _board.CurrentPlayer - 1;
+        public GameOutcome? Outcome { get; private set; }
+
+        public string? TryApply(string move)
+        {
+            if (!OthelloLogic.TryParse(move, out int row, out int col))
+                return "Moves are squares like d3.";
+            if (!_board.Play(row, col))
+                return "That square doesn't turn over any discs.";
+            if (_board.IsGameOver)
+                Outcome = new GameOutcome(_board.Winner == 0 ? null : _board.Winner - 1, _board.Winner == 0);
+            return null;
+        }
+    }
+}

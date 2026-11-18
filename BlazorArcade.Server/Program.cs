@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<IGameRules, ChessRules>();
 builder.Services.AddSingleton<IGameRules, Connect4Rules>();
+builder.Services.AddSingleton<IGameRules, OthelloRules>();
 builder.Services.AddSingleton<RoomManager>();
 builder.Services.AddHostedService<RoomJanitor>();
 builder.Services.AddSignalR();

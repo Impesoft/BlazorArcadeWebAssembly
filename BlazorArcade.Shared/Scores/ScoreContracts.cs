@@ -13,6 +13,8 @@ public static class ScoreGames
 {
     public const string CryptCrawler = "cryptcrawler";
     public const string Knightmare = "knightmare";
+    public const string Nemesis = "nemesis";
+    public const string PenguinAdventure = "penguin";
 
     /// <summary>
     /// Games that may post scores, with the highest score the server will believe.
@@ -22,6 +24,8 @@ public static class ScoreGames
     {
         [CryptCrawler] = 100_000,
         [Knightmare] = 9_999_999,
+        [Nemesis] = 9_999_999,
+        [PenguinAdventure] = 9_999_999,
         ["tetris"] = 9_999_999,
         ["breakout"] = 999_999,
         ["pacman"] = 999_999,

@@ -1,0 +1,6 @@
+Godot Engine is MIT licensed.
+Copyright (c) 2014-present Godot Engine contributors.
+Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.
+Engine license and third-party attributions: https://godotengine.org/license/
+
+Original geometry, shaders, robot characters, weapon models and synthesized audio made for this project. No Quake assets included.

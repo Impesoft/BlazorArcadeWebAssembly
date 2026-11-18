@@ -1,0 +1,101 @@
+@namespace BlazorArcade.Pages
+@page "/Othello"
+@using BlazorArcade.GameLogic
+
+<div class="ot-page">
+
+<video muted loop id="bg">
+    <source src="/css/BGTunnel.mp4" type="video/mp4" />
+</video>
+
+<div class="top-controls">
+    <button class="arcade-btn" @onclick="@(() => _nav.NavigateTo(ArcadeNav.Hub(_nav)))">Home</button>
+    @if (!_online)
+    {
+        <button class="arcade-btn" @onclick="NewGame">New Game</button>
+    }
+    <button class="arcade-btn" @onclick="ToggleMode">Mode: @ModeName</button>
+</div>
+
+@if (_online)
+{
+    <OnlineLobby @ref="_lobby" Game="@MatchGames.Othello" SeatLabels="@(new[] { "Black", "White" })" OnRoomChanged="OnRoomChanged" />
+}
+else if (_vsAi)
+{
+    <div class="ot-options">
+        <div class="ot-choice" role="group" aria-label="Opponent strength">
+            @foreach (var level in Enum.GetValues<OthelloLevel>())
+            {
+                <button class="@(_ai.Level == level ? "on" : "")" @onclick="() => SetLevel(level)">@level</button>
+            }
+        </div>
+        <div class="ot-choice" role="group" aria-label="Your colour">
+            <button class="@(_humanPlayer == 1 ? "on" : "")" @onclick="() => SetHumanPlayer(1)">Play black</button>
+            <button class="@(_humanPlayer == 2 ? "on" : "")" @onclick="() => SetHumanPlayer(2)">Play white</button>
+        </div>
+    </div>
+}
+
+<div class="ot-container">
+    <h1 class="ot-title">OTHELLO</h1>
+
+    <div class="ot-scores">
+        <div class="ot-score @(IsTurn(1) ? "turn" : "")">
+            <span class="ot-disc black"></span>
+            <span class="ot-name">@PlayerName(1)</span>
+            <span class="ot-count">@_game.Count(1)</span>
+        </div>
+        <div class="ot-score @(IsTurn(2) ? "turn" : "")">
+            <span class="ot-disc white"></span>
+            <span class="ot-name">@PlayerName(2)</span>
+            <span class="ot-count">@_game.Count(2)</span>
+        </div>
+    </div>
+
+    <div class="ot-status">@Status</div>
+
+    <div class="ot-board-wrap">
+        <div class="ot-board">
+            @for (int r = 0; r < OthelloLogic.Size; r++)
+            {
+                @for (int c = 0; c < OthelloLogic.Size; c++)
+                {
+                    int row = r, col = c;
+                    int cell = _game.Board[row, col];
+                    bool canPlay = CanClick && _legal.Contains((row, col));
+                    <div class="ot-cell @(canPlay ? "playable" : "") @(_game.LastMove == (row, col) ? "last" : "")"
+                         @onclick="() => PlayAsync(row, col)">
+                        @if (cell != 0)
+                        {
+                            <div @key="DiscKey(row, col)" class="ot-piece @(cell == 1 ? "black" : "white") @(_flipped.Contains((row, col)) ? "flip" : "")"></div>
+                        }
+                        else if (canPlay && _hints)
+                        {
+                            <div class="ot-hint"></div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+
+        @if (_game.IsGameOver)
+        {
+            <div class="ot-overlay">
+                <h2>@Result</h2>
+                <p>@_game.Count(1) – @_game.Count(2)</p>
+                @if (!_online)
+                {
+                    <button class="arcade-btn" @onclick="NewGame">Play again</button>
+                }
+            </div>
+        }
+    </div>
+
+    <label class="ot-hints-toggle">
+        <input type="checkbox" @bind="_hints" /> Show legal moves
+    </label>
+    <p class="ot-help">Place a disc so it traps a line of the other colour between two of yours; every trapped disc turns over. The board's fullest colour wins.</p>
+</div>
+
+</div>

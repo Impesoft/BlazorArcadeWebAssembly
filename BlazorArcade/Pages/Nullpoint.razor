@@ -1,0 +1,23 @@
+@page "/Nullpoint"
+@namespace BlazorArcade.Pages
+
+@* A Godot web game from wwwroot/godot; GodotGame frames its own loading page. *@
+<GodotGame Slug="nullpoint" Title="Nullpoint Arena" Controls="Controls" />
+
+@code {
+    private static readonly (string, string)[] Controls =
+    [
+        ("Enter", "Start / resume"),
+        ("WASD", "Move"),
+        ("Mouse", "Aim (click the game to capture it)"),
+        ("Left click / Ctrl / F", "Fire"),
+        ("1 / 2 / 3 / wheel", "Plasma / rockets / rail"),
+        ("Middle click", "Rail scope"),
+        ("Space", "Jump (hold to chain)"),
+        ("Shift", "Walk"),
+        ("Q E / arrows", "Turn"),
+        ("Tab", "Scores"),
+        ("M", "Sound"),
+        ("Escape", "Pause and settings"),
+    ];
+}
